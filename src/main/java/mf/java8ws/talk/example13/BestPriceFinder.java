@@ -46,7 +46,7 @@ public class BestPriceFinder {
         // Using completable futures.
         List<CompletableFuture<String>> priceFutures =
                 shops.parallelStream()
-                    .map(shop -> CompletableFuture.supplyAsync(() -> shop.getName() + " price is " + shop.getPriceFor(product)))
+                    .map(shop -> CompletableFuture.supplyAsync(() -> shop.getName() + " price is " + shop.getPriceFor(product), executor))
                     .collect(toList());
 
         CompletableFuture<List<String>> result = sequence(priceFutures);
