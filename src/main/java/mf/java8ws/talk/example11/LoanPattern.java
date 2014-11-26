@@ -1,5 +1,7 @@
 package mf.java8ws.talk.example11;
 
+import java.util.function.Consumer;
+
 public class LoanPattern {
 
     public static class Resource {
@@ -13,13 +15,27 @@ public class LoanPattern {
             throw new RuntimeException();
         }
 
-        public void dispose() {
-            System.out.println("Disposing resource");
-        }
+        private void dispose() { System.out.println("Disposing resource"); }
 
+        public static void withResource(Consumer<Resource> consumer) {
+            Resource r = new Resource();
+            try {
+                consumer.accept(r);
+            } finally {
+                r.dispose();
+            }
+        }
     }
 
     public static void main(String... args) {
+//        Resource r = new Resource();
+//        try {
+//            r.operate();
+//        } finally {
+//            r.dispose();
+//        }
+
+        Resource.withResource(r -> r.operate());
 
     }
 }
