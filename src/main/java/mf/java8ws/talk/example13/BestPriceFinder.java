@@ -1,11 +1,17 @@
 package mf.java8ws.talk.example13;
 
+import com.sun.tools.corba.se.idl.StringGen;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static mf.java8ws.talk.example13.Util.sequence;
 
 public class BestPriceFinder {
 
@@ -31,11 +37,20 @@ public class BestPriceFinder {
     }
 
     public List<String> findPriceParallel(String product) {
-        return null;
+        return shops.parallelStream()
+                .map(shop -> shop.getName() + " price is " + shop.getPriceFor(product))
+                .collect(Collectors.<String>toList());
     }
 
     public List<String> findPrice(String product) {
-        return null;
+        // Using completable futures.
+        List<CompletableFuture<String>> priceFutures =
+                shops.parallelStream()
+                    .map(shop -> CompletableFuture.supplyAsync(() -> shop.getName() + " price is " + shop.getPriceFor(product)))
+                    .collect(toList());
+
+        CompletableFuture<List<String>> result = sequence(priceFutures);
+        return result.join();
     }
 
 }
