@@ -9,6 +9,9 @@ public class Modularity {
         Dish d2 = new Dish("beef", false, 700, Dish.Type.MEAT);
         lightest(d1, d2);
 
+        System.out.println(
+            Dish.menu.stream().reduce(Modularity::minCalories)
+        );
     }
 
     public static Dish declareLightest(Dish d) {
@@ -19,5 +22,10 @@ public class Modularity {
     public static Dish lightest(Dish d1, Dish d2) {
         if (d1.getCalories() < d2.getCalories()) return declareLightest(d1);
         else return declareLightest(d2);
+    }
+
+    public static Dish minCalories(Dish d1, Dish d2) {
+        if (d1.getCalories() < d2.getCalories()) return d1;
+        else return d2;
     }
 }
